@@ -1,0 +1,173 @@
+{
+    "name": "Integration Telegram Bot",
+    "flow": [
+        {
+            "id": 1,
+            "module": "telegram:WatchUpdates",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 1335465
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -142,
+                    "y": 16
+                }
+            }
+        },
+        {
+            "id": 10,
+            "module": "ai-agent:RunAnAIAgent",
+            "version": 0,
+            "parameters": {},
+            "mapper": {
+                "agent": "58ff2739-4cdb-428a-9420-497588be7c29",
+                "timeout": "",
+                "messages": [],
+                "threadID": "{{1.message.message_id}}",
+                "outputType": "",
+                "additionalSystemPrompt": ""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 335,
+                    "y": 36
+                },
+                "restore": {
+                    "expect": {
+                        "agent": {
+                            "label": "Siya Manager"
+                        },
+                        "messages": {
+                            "mode": "chose"
+                        },
+                        "outputType": {
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "agent",
+                        "type": "aiagent",
+                        "label": "Agent",
+                        "required": true
+                    },
+                    {
+                        "name": "threadID",
+                        "type": "text",
+                        "label": "Thread ID"
+                    },
+                    {
+                        "name": "additionalSystemPrompt",
+                        "type": "text",
+                        "label": "Additional system instructions"
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages"
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "number",
+                        "label": "Timeout",
+                        "validate": {
+                            "max": 600,
+                            "min": 120
+                        }
+                    },
+                    {
+                        "name": "outputType",
+                        "type": "select",
+                        "label": "Output schema",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "make-schema"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 5370667
+            },
+            "mapper": {
+                "mode": "fromAll",
+                "values": {
+                    "0": "{{now}}",
+                    "1": "{{1.message.from.id}}",
+                    "2": "{{1.message.text}}",
+                    "3": "{{1.message.from.first_name}}",
+                    "4": "",
+                    "5": "",
+                    "6": "{{10.output}}"
+                },
+                "sheetId": "Sheet1",
+                "spreadsheetId": "1IaVJ2b12Q0qYIEgmbs0nCsDlT3tCPxRLQzsMJvWTnF4",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 831,
+                    "y": 20
+                }
+            }
+        },
+        {
+            "id": 7,
+            "module": "telegram:SendReplyMessage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 5370392
+            },
+            "mapper": {
+                "text": "{{10.output}}",
+                "chatId": "{{1.message.chat.id}}",
+                "parseMode": "Markdown",
+                "replyMarkup": "",
+                "messageThreadId": "",
+                "replyToMessageId": "",
+                "replyMarkupAssembleType": "reply_markup_enter"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1194,
+                    "y": 10
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": []
+    }
+}
